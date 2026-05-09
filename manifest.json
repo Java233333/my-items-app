@@ -1,0 +1,21 @@
+{
+  "name": "我的物品",
+  "short_name": "物品",
+  "start_url": "./list.html",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f5f5f7",
+  "description": "记录物品价格、日均成本、保质期和生命周期",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
