@@ -1,7 +1,7 @@
 {
   "name": "我的物品",
   "short_name": "物品",
-  "start_url": "./list.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#f5f5f7",
