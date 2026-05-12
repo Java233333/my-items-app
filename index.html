@@ -102,6 +102,12 @@ header{
   align-items:center;
 }
 
+.toolbar-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
 .search-wrap{
   position:relative;
   min-width:0;
@@ -181,6 +187,34 @@ input.search:focus{
   font-size:14px;
   box-shadow:0 4px 14px rgba(0,0,0,.05);
   max-width:160px;
+}
+
+.view-toggle{
+  display:none;
+  align-items:center;
+  gap:4px;
+  padding:4px;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:999px;
+  box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.view-toggle button{
+  border:none;
+  background:transparent;
+  color:var(--soft-text);
+  border-radius:999px;
+  min-width:54px;
+  height:34px;
+  padding:0 12px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.view-toggle button.active{
+  background:#1d1d1f;
+  color:white;
 }
 
 .tabs-wrap{
@@ -316,70 +350,6 @@ main{
 
 .cover.emoji-cover{
   height:112px;
-}
-
-.cover.image-tall{
-  height:260px;
-}
-
-.cover.image-medium{
-  height:210px;
-}
-
-.cover.image-short{
-  height:160px;
-}
-.cover.has-image{
-  background:var(--soft-bg);
-}
-
-.cover img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-.lazy-img{
-  opacity:0;
-  filter:blur(14px);
-  transform:scale(1.02);
-  transition:opacity .35s ease, filter .35s ease, transform .35s ease;
-}
-
-.lazy-img.loaded{
-  opacity:1;
-  filter:blur(0);
-  transform:scale(1);
-}
-
-.image-picker{
-  border:1px dashed var(--border);
-  background:var(--soft-bg);
-  border-radius:18px;
-  padding:14px;
-  text-align:center;
-  cursor:pointer;
-}
-
-.image-picker-preview{
-  width:100%;
-  height:150px;
-  border-radius:16px;
-  object-fit:cover;
-  display:none;
-  margin-top:10px;
-}
-
-.image-picker.has-preview .image-picker-preview{
-  display:block;
-}
-
-.image-picker-text{
-  color:var(--soft-text, #666);
-  font-weight:700;
 }
 
 .cover-0{background:linear-gradient(135deg,#ff3b30,#ff9f0a)}
@@ -1186,13 +1156,6 @@ input[type="date"]::-webkit-date-and-time-value{
   overflow:hidden;
 }
 
-.detail-icon img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
 .detail-title{
   font-size:22px;
   font-weight:900;
@@ -1352,6 +1315,14 @@ canvas{
   .toolbar{
     grid-template-columns:1fr;
   }
+  .toolbar-actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+  .view-toggle{
+    display:flex;
+  }
   .highlight-grid,
   .time-grid,
   .life-grid{
@@ -1369,6 +1340,38 @@ canvas{
   }
   .masonry{
     columns:1;
+  }
+  [data-mobile-columns="2"] .masonry{
+    columns:2;
+    column-gap:10px;
+  }
+  [data-mobile-columns="2"] .card{
+    border-radius:18px;
+    margin-bottom:10px;
+  }
+  [data-mobile-columns="2"] .cover.emoji-cover{
+    height:88px;
+    font-size:32px;
+  }
+  [data-mobile-columns="2"] .card-body{
+    padding:10px;
+  }
+  [data-mobile-columns="2"] .name{
+    font-size:14px;
+  }
+  [data-mobile-columns="2"] .meta,
+  [data-mobile-columns="2"] .card-note{
+    font-size:11px;
+  }
+  [data-mobile-columns="2"] .price{
+    font-size:13px;
+  }
+  [data-mobile-columns="2"] .actions{
+    gap:6px;
+  }
+  [data-mobile-columns="2"] .actions button{
+    padding:7px 4px;
+    font-size:12px;
   }
   .stat:last-child{
     grid-column:1/3;
@@ -1393,17 +1396,23 @@ canvas{
       <span class="search-icon">⌕</span>
       <input id="search" class="search" placeholder="搜索物品" />
     </div>
-    <select id="sortSelect" class="sort-select" title="排序方式">
-      <option value="newest">最新添加</option>
-      <option value="oldest">最早添加</option>
-      <option value="priceDesc">价格从高到低</option>
-      <option value="priceAsc">价格从低到高</option>
-      <option value="dailyDesc">日均从高到低</option>
-      <option value="dailyAsc">日均从低到高</option>
-      <option value="daysDesc">使用天数从多到少</option>
-      <option value="daysAsc">使用天数从少到多</option>
-      <option value="expireAsc">保质期最近</option>
-    </select>
+    <div class="toolbar-actions">
+      <select id="sortSelect" class="sort-select" title="排序方式">
+        <option value="newest">最新添加</option>
+        <option value="oldest">最早添加</option>
+        <option value="priceDesc">价格从高到低</option>
+        <option value="priceAsc">价格从低到高</option>
+        <option value="dailyDesc">日均从高到低</option>
+        <option value="dailyAsc">日均从低到高</option>
+        <option value="daysDesc">使用天数从多到少</option>
+        <option value="daysAsc">使用天数从少到多</option>
+        <option value="expireAsc">保质期最近</option>
+      </select>
+      <div class="view-toggle" aria-label="列表列数">
+        <button type="button" data-column-mode="1" onclick="setMobileColumns('1')">单列</button>
+        <button type="button" data-column-mode="2" onclick="setMobileColumns('2')">双列</button>
+      </div>
+    </div>
   </div>
 
   <div class="tabs-wrap" id="tabsWrap">
@@ -1574,12 +1583,6 @@ canvas{
     <form id="form" class="grid">
       <input type="hidden" id="editId">
       <input id="name" placeholder="物品名称" required>
-      <label class="image-picker" id="imagePicker">
-        <div class="image-picker-text">添加物品图片</div>
-        <input id="imageInput" type="file" accept="image/*" style="display:none">
-        <img id="imagePreview" class="image-picker-preview" alt="物品图片预览">
-      </label>
-      <input type="hidden" id="imageData">
       <select id="category"></select>
       <input id="price" type="number" step="0.01" min="0" placeholder="价格 / 元" required>
       <input id="paybackTarget" type="number" step="0.01" min="0.01" placeholder="回本目标日均 / 元，默认 1">
@@ -1641,6 +1644,7 @@ const CAT_KEY="items_categories_v7";
 const CAT_ICON_KEY="items_category_icons_v7";
 const THEME_KEY="items_theme_v1";
 const TAG_KEY="items_custom_tags_v1";
+const MOBILE_COLUMNS_KEY="items_mobile_columns_v1";
 
 let items=JSON.parse(localStorage.getItem(ITEM_KEY)||"[]");
 let categories=JSON.parse(localStorage.getItem(CAT_KEY)||"null") || [
@@ -1653,6 +1657,7 @@ let currentPage="home";
 let sortMode="newest";
 let expireOnly=false;
 let currentTheme=localStorage.getItem(THEME_KEY) || "light";
+let mobileColumns=localStorage.getItem(MOBILE_COLUMNS_KEY) || "1";
 let customTags=JSON.parse(localStorage.getItem(TAG_KEY)||"null") || [
   "高频使用","收藏","回购","实验室","出差"
 ];
@@ -1679,6 +1684,12 @@ const icons={
 const $=id=>document.getElementById(id);
 const today=()=>new Date(new Date().toDateString());
 const money=n=>"¥"+Number(n||0).toFixed(2);
+
+function removeImageData(list){
+  return list.map(({image,...item})=>item);
+}
+
+items=removeImageData(items);
 
 function saveItems(){
   localStorage.setItem(ITEM_KEY,JSON.stringify(items));
@@ -1829,14 +1840,6 @@ function coverClass(cat){
   return "cover-" + (Math.abs(cat.length) % 7);
 }
 
-function imageHeightClass(item){
-  if(!item.image)return "emoji-cover";
-  const seed=(item.name.length + item.category.length + Math.round(Number(item.price || 0))) % 3;
-  if(seed===0)return "image-tall";
-  if(seed===1)return "image-medium";
-  return "image-short";
-}
-
 function sortItems(a,b){
   const priceA=Number(a.price||0);
   const priceB=Number(b.price||0);
@@ -1925,9 +1928,24 @@ function toggleExpireFilter(){
   render();
 }
 
+function applyMobileColumns(){
+  const value=mobileColumns==="2" ? "2" : "1";
+  document.documentElement.dataset.mobileColumns=value;
+  document.querySelectorAll("[data-column-mode]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.columnMode===value);
+  });
+}
+
+function setMobileColumns(value){
+  mobileColumns=value==="2" ? "2" : "1";
+  localStorage.setItem(MOBILE_COLUMNS_KEY,mobileColumns);
+  applyMobileColumns();
+}
+
 function render(){
   renderTabs();
   renderCategorySelect();
+  applyMobileColumns();
 
   const q=$("search").value.trim().toLowerCase();
 
@@ -1957,8 +1975,8 @@ function render(){
 
     return `
       <article class="card" onclick="openDetailModal('${x.id}')">
-        <div class="cover ${x.image ? 'has-image' : coverClass(x.category)} ${imageHeightClass(x)}">
-          ${x.image ? `<img class="lazy-img" loading="lazy" src="${x.image}" alt="${escapeAttr(x.name)}" onload="this.classList.add('loaded')">` : getIcon(x.category)}
+        <div class="cover ${coverClass(x.category)} emoji-cover">
+          ${getIcon(x.category)}
         </div>
         <div class="card-body">
           <div class="name">${escapeHtml(x.name)}</div>
@@ -2008,8 +2026,6 @@ function render(){
   $("avg").textContent=money(avg)+"/天";
   $("expireSoonCount").textContent=expireSoonCount;
   $("expireFilterCard").classList.toggle("active-filter",expireOnly);
-
-  requestAnimationFrame(hydrateLoadedImages);
 
   if(currentPage==="stats") renderStatsPage();
   if(currentPage==="mine") renderMinePage();
@@ -2320,7 +2336,7 @@ function importBackup(event){
 
       if(!confirm("导入后会覆盖当前数据，确定继续吗？"))return;
 
-      items=data.items;
+      items=removeImageData(data.items);
       categories=data.categories;
       categoryIcons=data.categoryIcons || {};
       customTags=data.customTags || customTags;
@@ -2372,7 +2388,7 @@ function openDetailModal(id){
 
   $("detailContent").innerHTML=`
     <div class="detail-head">
-      <div class="detail-icon">${x.image ? `<img class="lazy-img" src="${x.image}" alt="${escapeAttr(x.name)}" onload="this.classList.add('loaded')">` : getIcon(x.category)}</div>
+      <div class="detail-icon">${getIcon(x.category)}</div>
       <div>
         <div class="detail-title">${escapeHtml(x.name)}</div>
         <div class="detail-sub">${escapeHtml(x.category)} · 购买于 ${x.buyDate}</div>
@@ -2426,7 +2442,6 @@ function openDetailModal(id){
 
   showModal("detailModal");
   requestAnimationFrame(()=>{
-    hydrateLoadedImages();
     drawCostChart(x.price,days);
   });
 }
@@ -2502,9 +2517,6 @@ function openItemModal(){
   $("formTitle").textContent="添加物品";
   $("form").reset();
   $("editId").value="";
-  $("imageData").value="";
-  $("imagePreview").src="";
-  $("imagePicker").classList.remove("has-preview");
   $("buyDate").value=new Date().toISOString().slice(0,10);
   $("paybackTarget").value="";
   $("lifeStatus").value="auto";
@@ -2557,7 +2569,6 @@ $("form").addEventListener("submit",e=>{
     endDate:$("endDate").value,
     expireDate:$("expireDate").value,
     note:$("note").value.trim(),
-    image:$("imageData").value,
     tags:selectedTags
   };
 
@@ -2588,18 +2599,9 @@ function editItem(id){
   $("endDate").value=x.endDate;
   $("expireDate").value=x.expireDate;
   $("note").value=x.note || "";
-  $("imageData").value=x.image || "";
 
   renderTagSelector(x.tags || []);
   $("newTagInput").value="";
-
-  if(x.image){
-    $("imagePreview").src=x.image;
-    $("imagePicker").classList.add("has-preview");
-  }else{
-    $("imagePreview").src="";
-    $("imagePicker").classList.remove("has-preview");
-  }
 
   showModal("itemModal");
 }
@@ -2705,12 +2707,6 @@ function escapeAttr(str){
   return String(str).replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
-function hydrateLoadedImages(){
-  document.querySelectorAll("img.lazy-img").forEach(img=>{
-    if(img.complete) img.classList.add("loaded");
-  });
-}
-
 function saveTags(){
   localStorage.setItem(TAG_KEY,JSON.stringify(customTags));
 }
@@ -2776,19 +2772,6 @@ function addCustomTag(){
 }
 
 
-$("imageInput").addEventListener("change",e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-
-  const reader=new FileReader();
-  reader.onload=()=>{
-    $("imageData").value=reader.result;
-    $("imagePreview").src=reader.result;
-    $("imagePicker").classList.add("has-preview");
-  };
-  reader.readAsDataURL(file);
-});
-
 $("search").addEventListener("input",render);
 
 $("sortSelect").addEventListener("change",e=>{
@@ -2811,6 +2794,7 @@ function toggleTheme(){
 }
 
 applyTheme();
+applyMobileColumns();
 render();
 
 if("serviceWorker" in navigator){
